@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PlaceholderNote, Rule } from './primitives'
 import { testimonials } from '@/data/site'
-import { useI18n } from '@/i18n'
+import { t } from '@/copy'
 import { cx, prefersReducedMotion } from '@/lib/utils'
 
 const AUTO_ADVANCE_MS = 7000
@@ -33,7 +33,6 @@ function Chevron({ back }: { back?: boolean }) {
 }
 
 export default function TestimonialCarousel({ className }: { className?: string }) {
-  const { t, locale } = useI18n()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const [reduced, setReduced] = useState(prefersReducedMotion)
@@ -79,7 +78,7 @@ export default function TestimonialCarousel({ className }: { className?: string 
           aria-live="polite"
           className="mt-8 grid min-h-[11rem] sm:min-h-[12.5rem] lg:min-h-[13.5rem]"
         >
-          <AnimatePresence initial={false}>
+          <AnimatePresence initial={false} mode="wait">
             <motion.figure
               key={item.id}
               initial={{ opacity: 0 }}
@@ -89,13 +88,13 @@ export default function TestimonialCarousel({ className }: { className?: string 
               className="col-start-1 row-start-1 m-0"
             >
               <blockquote className="font-display text-[clamp(1.4rem,3.3vw,2.3rem)] font-light italic leading-[1.3] tracking-[-0.015em] text-ink text-pretty">
-                {item.quote[locale]}
+                {item.quote}
               </blockquote>
               <figcaption className="mt-7 flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <span className="text-[12px] font-medium uppercase tracking-[0.14em] text-ink">
                   {item.name}
                 </span>
-                <span className="text-[13.5px] text-ink-muted">{item.role[locale]}</span>
+                <span className="text-[13.5px] text-ink-muted">{item.role}</span>
               </figcaption>
             </motion.figure>
           </AnimatePresence>

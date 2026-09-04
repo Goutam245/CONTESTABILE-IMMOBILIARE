@@ -27,6 +27,10 @@ interface Props {
   priority?: boolean
   /** Scale the image up slightly on parent hover. */
   zoomOnHover?: boolean
+  /** CSS object-position. Landscape photos cropped to a tall hero otherwise
+      centre on the middle of the frame, which is usually the least interesting
+      part of an architectural shot. */
+  objectPosition?: string
 }
 
 export default function SmartImage({
@@ -42,6 +46,7 @@ export default function SmartImage({
   imgClassName,
   priority = false,
   zoomOnHover = false,
+  objectPosition,
 }: Props) {
   const ref = useRef<HTMLImageElement>(null)
   const [loaded, setLoaded] = useState(false)
@@ -75,6 +80,7 @@ export default function SmartImage({
         {...({ fetchpriority: priority ? 'high' : undefined } as {
           fetchpriority?: 'high' | 'low' | 'auto'
         })}
+        style={objectPosition ? { objectPosition } : undefined}
         onLoad={() => setLoaded(true)}
         className={cx(
           'h-full w-full object-cover transition-[opacity,transform] ease-cinematic',

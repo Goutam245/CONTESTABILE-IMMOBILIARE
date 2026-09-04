@@ -16,7 +16,7 @@ import PropertyGallery from '@/components/PropertyGallery'
 import HeroMedia from '@/components/HeroMedia'
 import PropertyMap from '@/components/PropertyMap'
 import { ArrowGlyph, ButtonLink, DataRow, Section, SectionHead, Tag } from '@/components/primitives'
-import { useI18n, type TKey } from '@/i18n'
+import { t, type TKey } from '@/copy'
 import { properties, propertyById } from '@/data/properties'
 import { agency } from '@/data/site'
 import { useReveal } from '@/lib/anim'
@@ -58,12 +58,10 @@ function excerpt(text: string, max = 155): string {
 
 /** A stale link or a withdrawn listing lands here — quiet, and never a crash. */
 function Missing() {
-  const { t, locale } = useI18n()
 
   useSeo({
     title: `${t('detail.notfound.title')} — ${agency.name}`,
     description: t('detail.notfound.sub'),
-    locale,
   })
 
   return (
@@ -95,7 +93,6 @@ interface Row {
 }
 
 function Detail({ property }: { property: Property }) {
-  const { t, locale } = useI18n()
   const [copied, setCopied] = useState(false)
   const copyTimer = useRef<number>()
 
@@ -110,10 +107,10 @@ function Detail({ property }: { property: Property }) {
   const cover = coverFor(property.id)
   const related = relatedTo(property, properties, 3)
 
-  const title = sentence(propertyTitle(property, locale, t))
+  const title = sentence(propertyTitle(property))
   const address = `${property.indirizzo}, ${property.comune} (${property.provincia})`
-  const summary = excerpt(property.descrizione.it)
-  const paragraphs = property.descrizione[locale]
+  const summary = excerpt(property.descrizione)
+  const paragraphs = property.descrizione
     .split('\n')
     .map((s) => s.trim())
     .filter(Boolean)
@@ -171,7 +168,6 @@ function Detail({ property }: { property: Property }) {
     description: summary,
     image: cover?.full,
     path: routeFor(property),
-    locale,
     jsonLd,
   })
 
@@ -180,14 +176,14 @@ function Detail({ property }: { property: Property }) {
     if (value === null || value === '') return
     rows.push({ key, label: t(labelKey), value })
   }
-  const count = (v: number | null) => (v === null ? null : formatNumber(v, locale))
+  const count = (v: number | null) => (v === null ? null : formatNumber(v))
   const yesNo = (v: boolean) => t(v ? 'spec.si' : 'spec.no')
 
   add('vani', 'spec.vani', count(property.vani))
   add('camere', 'spec.camere', count(property.camere))
   add('bagni', 'spec.bagni', count(property.bagni))
-  add('mq', 'spec.mq', formatArea(property.mq, locale))
-  add('mqc', 'spec.mqc', formatArea(property.mqCommerciali, locale))
+  add('mq', 'spec.mq', formatArea(property.mq))
+  add('mqc', 'spec.mqc', formatArea(property.mqCommerciali))
   add('classe', 'spec.classe', property.classeEnergetica)
   add('piano', 'spec.piano', property.piano)
   add('riscaldamento', 'spec.riscaldamento', property.riscaldamento)
@@ -201,13 +197,13 @@ function Detail({ property }: { property: Property }) {
     'spec.spese',
     property.speseCondominiali === null
       ? null
-      : `${formatPrice(property.speseCondominiali, locale)} ${t('spec.mese')}`,
+      : `${formatPrice(property.speseCondominiali)} ${t('spec.mese')}`,
   )
   add('arredato', 'spec.arredato', yesNo(property.arredato))
   add('condizionamento', 'spec.condizionamento', yesNo(property.condizionamento))
   add('ascensore', 'spec.ascensore', yesNo(property.ascensore))
 
-  const cell = (v: number | null) => (v === null ? ND : formatNumber(v, locale))
+  const cell = (v: number | null) => (v === null ? ND : formatNumber(v))
   const tableHeadingId = `consistenze-${property.id}`
 
   async function copyLink() {
@@ -231,7 +227,7 @@ function Detail({ property }: { property: Property }) {
       <section className="relative overflow-hidden bg-ink pb-14 pt-[calc(var(--nav-h)+3rem)] sm:pb-16 sm:pt-[calc(var(--nav-h)+4rem)] lg:pb-20">
         <HeroMedia
           photo={photos[0]}
-          alt={photos.length ? photoAlt(property, 0, photos.length, locale, t) : ''}
+          alt={photos.length ? photoAlt(property, 0, photos.length) : ''}
           strength={10}
           topScrim
         />
@@ -239,7 +235,7 @@ function Detail({ property }: { property: Property }) {
         <div className="shell relative">
           <Link
             to="/immobili"
-            className="group inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.14em] text-bone/85 transition-colors duration-500 ease-cinematic hover:text-bone"
+            className="group inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.14em] text-bone transition-colors duration-500 ease-cinematic hover:text-white"
           >
             <ArrowGlyph className="rotate-180" />
             {t('detail.back')}
@@ -251,7 +247,7 @@ function Detail({ property }: { property: Property }) {
                 <Tag tone={property.contratto === 'vendita' ? 'sale' : 'rent'}>
                   {t(contrattoKey(property.contratto))}
                 </Tag>
-                <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-bone/85">
+                <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-bone">
                   {t('detail.ref')} {property.rif}
                 </span>
               </div>
@@ -266,13 +262,13 @@ function Detail({ property }: { property: Property }) {
 
             <div className="shrink-0 lg:text-right">
               <p className="font-display text-[clamp(1.7rem,3.2vw,2.4rem)] font-light leading-none tracking-[-0.02em] text-bone">
-                {formatPriceWithPeriod(property, locale, t)}
+                {formatPriceWithPeriod(property)}
               </p>
               <div className="mt-5 flex items-center gap-4 lg:justify-end">
                 <button
                   type="button"
                   onClick={() => void copyLink()}
-                  className="text-[11px] font-medium uppercase tracking-[0.14em] text-bone/85 transition-colors duration-500 ease-cinematic hover:text-bone"
+                  className="text-[11px] font-medium uppercase tracking-[0.14em] text-bone transition-colors duration-500 ease-cinematic hover:text-white"
                 >
                   {t('detail.share')}
                 </button>
@@ -344,7 +340,7 @@ function Detail({ property }: { property: Property }) {
                               scope="row"
                               className="py-3 pr-3 text-left text-[14.5px] font-normal leading-snug text-ink"
                             >
-                              {locale === 'it' ? c.descrizione : c.descrizioneEn}
+                              {c.descrizione}
                             </th>
                             <td className="px-3 py-3 text-right text-[14.5px] tabular-nums text-ink-muted">
                               {cell(c.mq)}
@@ -365,7 +361,7 @@ function Detail({ property }: { property: Property }) {
                             {t('detail.consistenze.total')}
                           </th>
                           <td className="py-4 pl-3 text-right font-display text-[17px] tabular-nums text-ink">
-                            {formatNumber(property.mqCommerciali, locale)} m²c
+                            {formatNumber(property.mqCommerciali)} m²c
                           </td>
                         </tr>
                       </tfoot>
