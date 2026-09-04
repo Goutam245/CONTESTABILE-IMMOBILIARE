@@ -11,10 +11,12 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import HeroMedia from './HeroMedia'
+import AmbientOrbit from './AmbientOrbit'
+import MagneticCta from './MagneticCta'
 import { ButtonLink, ArrowGlyph } from './primitives'
-import { heroAlt, heroPhoto } from '@/data/heroes'
+import { heroAlt, heroPhoto, heroVideo } from '@/data/heroes'
 import { agency, yearsTrading } from '@/data/site'
-import { useI18n } from '@/i18n'
+import { t } from '@/copy'
 
 const easing = [0.16, 1, 0.3, 1] as const
 
@@ -25,11 +27,19 @@ const rise = {
 }
 
 export default function HomeHero() {
-  const { t, locale } = useI18n()
 
   return (
     <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink">
-      <HeroMedia photo={heroPhoto('home')} alt={heroAlt.home[locale]} strength={16} />
+      <HeroMedia
+        photo={heroPhoto('home')}
+        video={heroVideo('home')}
+        alt={heroAlt.home}
+        strength={16}
+      />
+
+      {/* Continuous ambient motion, parked in the bright half of the frame so
+          it never sits behind the headline or the buttons. */}
+      <AmbientOrbit className="right-[5vw] top-[16vh] hidden h-[40vh] w-[40vh] xl:block 2xl:right-[7vw] 2xl:h-[44vh] 2xl:w-[44vh]" />
 
       {/* The copy scrolls away with the section. It used to be tied to a
           scroll-linked fade that reached near-zero opacity while the buttons
@@ -39,7 +49,7 @@ export default function HomeHero() {
         initial="hidden"
         animate="show"
         transition={{ staggerChildren: 0.07, delayChildren: 0.1 }}
-        className="shell relative w-full pb-16 pt-[calc(var(--nav-h)+3rem)] sm:pb-20"
+        className="shell relative z-10 w-full pb-16 pt-[calc(var(--nav-h)+3rem)] sm:pb-20"
       >
         <motion.p
           variants={rise}
@@ -52,7 +62,7 @@ export default function HomeHero() {
         <motion.h1
           variants={rise}
           transition={{ duration: 0.8, ease: easing }}
-          className="mt-5 max-w-5xl text-[clamp(2.7rem,7.6vw,6.4rem)] leading-[0.98] tracking-[-0.03em] text-bone"
+          className="mt-5 max-w-3xl text-[clamp(2.7rem,7.6vw,6.4rem)] leading-[0.98] tracking-[-0.03em] text-bone"
         >
           {t('home.hero.title.a')}{' '}
           <em className="font-light italic">{t('home.hero.title.b')}</em>
@@ -71,10 +81,12 @@ export default function HomeHero() {
           transition={{ duration: 0.7, ease: easing }}
           className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4"
         >
-          <ButtonLink to="/immobili" variant="accent" size="lg">
-            {t('home.hero.cta')}
-            <ArrowGlyph />
-          </ButtonLink>
+          <MagneticCta>
+            <ButtonLink to="/immobili" variant="accent" size="lg">
+              {t('home.hero.cta')}
+              <ArrowGlyph />
+            </ButtonLink>
+          </MagneticCta>
           <Link
             to="/contatti"
             className="group inline-flex items-center gap-3 text-[12.5px] font-medium uppercase tracking-[0.15em] text-bone/90 transition-colors hover:text-bone"
@@ -90,7 +102,7 @@ export default function HomeHero() {
           className="mt-12 flex items-end justify-between gap-6 border-t border-bone/20 pt-5"
         >
           <p className="max-w-xs font-display text-[15px] font-light italic leading-snug text-bone/75">
-            {agency.tagline[locale]}
+            {agency.tagline}
           </p>
 
           <div className="flex items-center gap-4">
@@ -107,9 +119,7 @@ export default function HomeHero() {
         </motion.div>
 
         <span className="sr-only">
-          {locale === 'it'
-            ? `Agenzia attiva dal ${agency.founded}, ${yearsTrading()} anni di attività.`
-            : `Trading since ${agency.founded}, ${yearsTrading()} years in business.`}
+          {`Agenzia attiva dal ${agency.founded}, ${yearsTrading()} anni di attività.`}
         </span>
       </motion.div>
     </section>

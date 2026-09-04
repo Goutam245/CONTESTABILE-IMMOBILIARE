@@ -11,12 +11,11 @@ import type { PhotoRendition } from '@/types'
 const HEROES = {
   /**
    * PLACEHOLDER — swap for the client's chosen photography.
-   * The flagship Piazza Vanvitelli building, in Caserta itself: architecture
-   * rather than landscape, so the hero reads as real estate at a glance, with
-   * open sky behind the headline. It replaced a hillside panorama that looked
-   * like a nature shot.
+   * A detached villa under open sky: a bright, well-lit property exterior. It
+   * replaced a facade shot framed by trees that read as dark and murky once the
+   * scrim was over it.
    */
-  home: { property: 'av-vanvitelli-330', photo: 'av-vanvitelli-330-01' },
+  home: { property: 'vv-acquariello-135', photo: 'vv-acquariello-135-02' },
   /** Stone courtyard arch of the 1770 building. */
   properties: { property: 'pv-municipio-110', photo: 'pv-municipio-110-02' },
   /** Terracotta floors and an arch — the heritage stock the agency is known for. */
@@ -32,22 +31,30 @@ export function heroPhoto(key: HeroKey): PhotoRendition | undefined {
   return photosFor(property).find((p) => p.id === photo)
 }
 
-/** Descriptive alt text for each hero, in both languages. */
-export const heroAlt: Record<HeroKey, { it: string; en: string }> = {
-  home: {
-    it: 'Palazzo signorile in Piazza Vanvitelli, Caserta — facciata con balconi',
-    en: 'Fine residential building on Piazza Vanvitelli, Caserta — balconied facade',
-  },
-  properties: {
-    it: 'Cortile interno con arco in pietra di uno stabile storico a Marzano Appio',
-    en: 'Inner courtyard with a stone arch in a historic building in Marzano Appio',
-  },
-  about: {
-    it: 'Sala con pavimento in cotto, arco e arredi d’epoca in uno stabile del 1770 a Marzano Appio',
-    en: 'Room with terracotta floor, arch and period furniture in a 1770 building in Marzano Appio',
-  },
-  contact: {
-    it: 'Ambiente con pareti in pietra di tufo e travi a vista a Marzano Appio',
-    en: 'Room with tuff stone walls and exposed beams in Marzano Appio',
-  },
+/**
+ * The client's hero footage, one loop per page.
+ *
+ * These take over from the stills above. The photographs stay defined because
+ * they remain the fallback whenever the video is suppressed — reduced motion,
+ * Data Saver, a 2G estimate — so every hero still has a considered still frame
+ * behind it rather than black.
+ */
+const HERO_VIDEO: Record<HeroKey, string> = {
+  home: 'home-hero',
+  properties: 'immobili-hero',
+  about: 'agenzia-hero',
+  contact: 'contatti-hero',
+}
+
+export const heroVideo = (key: HeroKey): string => HERO_VIDEO[key]
+
+/** The mid-homepage interlude — not a hero, a full-bleed break in the page. */
+export const INTERLUDE_VIDEO = 'home-interlude'
+
+/** Descriptive alt text for each hero. */
+export const heroAlt: Record<HeroKey, string> = {
+  home: 'Villa indipendente a Caiazzo — facciata con terrazza sotto cielo aperto',
+  properties: 'Cortile interno con arco in pietra di uno stabile storico a Marzano Appio',
+  about: 'Sala con pavimento in cotto, arco e arredi d’epoca in uno stabile del 1770 a Marzano Appio',
+  contact: 'Ambiente con pareti in pietra di tufo e travi a vista a Marzano Appio',
 }
