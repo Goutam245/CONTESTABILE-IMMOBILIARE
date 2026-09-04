@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import SmartImage from './SmartImage'
 import { Tag } from './primitives'
-import { useI18n } from '@/i18n'
+import { t } from '@/copy'
 import type { PhotoRendition, Property } from '@/types'
 import { useReveal } from '@/lib/anim'
 import { setScrollLocked } from '@/lib/smoothScroll'
@@ -60,7 +60,6 @@ export default function PropertyGallery({
   property: Property
   photos: PhotoRendition[]
 }) {
-  const { t, locale } = useI18n()
   const [reduced] = useState(prefersReducedMotion)
   const [index, setIndex] = useState<number | null>(null)
   const frame = useReveal<HTMLElement>({ y: 22, stagger: 0.1 })
@@ -160,7 +159,7 @@ export default function PropertyGallery({
   const lead = photos[0]
   const sides = total >= 3 ? photos.slice(1, 3) : photos.slice(1, 2)
   const headingId = `gallery-${property.id}`
-  const caption = propertyTitle(property, locale, t)
+  const caption = propertyTitle(property)
 
   const gridCls = total === 1 ? '' : total === 2 ? 'sm:grid-cols-2' : 'lg:grid-cols-3 lg:grid-rows-2'
   const leadCls =
@@ -194,7 +193,7 @@ export default function PropertyGallery({
               src={lead.card}
               srcLarge={lead.full}
               sizes="(max-width: 1024px) 100vw, 60vw"
-              alt={photoAlt(property, 0, total, locale, t)}
+              alt={photoAlt(property, 0, total)}
               color={lead.color}
               width={lead.w}
               height={lead.h}
@@ -208,7 +207,7 @@ export default function PropertyGallery({
             />
             <span aria-hidden className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
               <Tag tone="invert">
-                {t('detail.gallery.open')} · {formatNumber(total, locale)}
+                {t('detail.gallery.open')} · {formatNumber(total)}
               </Tag>
             </span>
             <span className="sr-only">{t('detail.gallery.open')}</span>
@@ -229,7 +228,7 @@ export default function PropertyGallery({
                 src={photo.card}
                 srcLarge={photo.full}
                 sizes="(max-width: 1024px) 100vw, 30vw"
-                alt={photoAlt(property, i + 1, total, locale, t)}
+                alt={photoAlt(property, i + 1, total)}
                 color={photo.color}
                 width={photo.w}
                 height={photo.h}
@@ -255,7 +254,7 @@ export default function PropertyGallery({
                 >
                   <SmartImage
                     src={photo.thumb}
-                    alt={photoAlt(property, i + 1, total, locale, t)}
+                    alt={photoAlt(property, i + 1, total)}
                     color={photo.color}
                     width={photo.w}
                     height={photo.h}
@@ -284,8 +283,8 @@ export default function PropertyGallery({
           >
             <div className="flex shrink-0 items-center justify-between gap-6 px-4 py-4 sm:px-8">
               <p className="text-[11px] font-medium uppercase tracking-eyebrow text-bone/55">
-                {formatNumber((index ?? 0) + 1, locale)} {t('detail.gallery.of')}{' '}
-                {formatNumber(total, locale)}
+                {formatNumber((index ?? 0) + 1)} {t('detail.gallery.of')}{' '}
+                {formatNumber(total)}
               </p>
               <button
                 ref={closeRef}
@@ -332,7 +331,7 @@ export default function PropertyGallery({
                   src={current.card}
                   srcLarge={current.full}
                   sizes="(max-width: 640px) 94vw, 86vw"
-                  alt={photoAlt(property, index ?? 0, total, locale, t)}
+                  alt={photoAlt(property, index ?? 0, total)}
                   color={current.color}
                   width={current.w}
                   height={current.h}
@@ -378,7 +377,7 @@ export default function PropertyGallery({
                     >
                       <SmartImage
                         src={photo.thumb}
-                        alt={photoAlt(property, i, total, locale, t)}
+                        alt={photoAlt(property, i, total)}
                         color={photo.color}
                         width={photo.w}
                         height={photo.h}

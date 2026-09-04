@@ -8,8 +8,6 @@
  * the UI needs labels and the mapping is one-directional at import time.
  */
 
-export type Locale = 'it' | 'en'
-
 /** AgestaNET `contratto`: V = Vendita, A = Affitto. */
 export type Contratto = 'vendita' | 'affitto'
 
@@ -22,15 +20,8 @@ export type PinPrecision = 'via' | 'approssimativa' | 'comune'
 /** One row of the "Consistenze" table. `null` renders as "ND", as on the source page. */
 export interface Consistenza {
   descrizione: string
-  descrizioneEn: string
   mq: number | null
   mqComm: number | null
-}
-
-/** A localised free-text pair. English is a translation for the EN UI only. */
-export interface Testo {
-  it: string
-  en: string
 }
 
 export interface Property {
@@ -79,7 +70,8 @@ export interface Property {
   /** Remaining boolean amenities, kept as the source's own labels. */
   extras: string[]
 
-  descrizione: Testo
+  /** The agency's own Italian copy, verbatim. */
+  descrizione: string
   consistenze: Consistenza[]
 
   /** Curated for the home page carousel. */

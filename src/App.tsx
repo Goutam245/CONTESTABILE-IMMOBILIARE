@@ -3,9 +3,10 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import LogoIntro from '@/components/LogoIntro'
+import ScrollToTop from '@/components/ScrollToTop'
 import Home from '@/pages/Home'
-import { useI18n } from '@/i18n'
-import { useSmoothScroll, scrollToTop } from '@/lib/smoothScroll'
+import { t } from '@/copy'
+import { useSmoothScroll } from '@/lib/smoothScroll'
 import { ScrollTrigger } from '@/lib/anim'
 
 /**
@@ -21,14 +22,14 @@ const Contact = lazy(() => import('@/pages/Contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 /**
- * Route changes must reset scroll *and* recalculate every ScrollTrigger, since
- * the next page's document height is not known until after it paints.
+ * Recalculates every ScrollTrigger after a route change — the next page's
+ * document height is not known until it paints. Scroll position itself is
+ * <ScrollToTop>'s job.
  */
 function RouteEffects() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    scrollToTop(true)
     const id = window.setTimeout(() => ScrollTrigger.refresh(), 180)
     return () => window.clearTimeout(id)
   }, [pathname])
@@ -67,7 +68,6 @@ function useScrollTriggerSafetyNet() {
 }
 
 export default function App() {
-  const { t } = useI18n()
   useSmoothScroll()
   useScrollTriggerSafetyNet()
 
@@ -78,6 +78,7 @@ export default function App() {
       </a>
 
       <LogoIntro />
+      <ScrollToTop />
       <RouteEffects />
       <Navbar />
 

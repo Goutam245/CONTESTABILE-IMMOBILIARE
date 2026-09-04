@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { divIcon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useI18n, type TKey } from '@/i18n'
+import { t, type TKey } from '@/copy'
 import { cx } from '@/lib/utils'
 import type { PinPrecision } from '@/types'
 
@@ -54,7 +54,6 @@ export default function PropertyMap({
   zoom?: number
   className?: string
 }) {
-  const { t } = useI18n()
 
   // Leaflet builds the map imperatively into the node it is handed, so it must
   // not run during render — this defers it to the first client-side commit.
