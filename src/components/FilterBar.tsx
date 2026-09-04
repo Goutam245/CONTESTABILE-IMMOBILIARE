@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { setScrollLocked } from '@/lib/smoothScroll'
 import { ArrowGlyph, Button } from './primitives'
-import { useI18n, type TKey } from '@/i18n'
+import { t, type TKey } from '@/copy'
 import type { Contratto, Property, Tipologia } from '@/types'
 import { comuni, priceRange } from '@/data/properties'
 import {
@@ -244,7 +244,6 @@ export default function FilterBar({
   drawerOpen?: boolean
   onDrawerOpenChange?: (open: boolean) => void
 }) {
-  const { locale, t } = useI18n()
   const navigate = useNavigate()
   const uid = useId()
 
@@ -268,7 +267,7 @@ export default function FilterBar({
   const setContratto = (c: Contratto | 'all') => patch({ contratto: c, maxPrezzo: null })
 
   const priceValue = Math.min(bounds.hi, Math.max(bounds.lo, value.maxPrezzo ?? bounds.hi))
-  const priceLabel = `≤ ${formatPrice(priceValue, locale)}${
+  const priceLabel = `≤ ${formatPrice(priceValue)}${
     value.contratto === 'affitto' ? ` ${t('spec.mese')}` : ''
   }`
 
@@ -309,7 +308,7 @@ export default function FilterBar({
         aria-live="polite"
         className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink-faint"
       >
-        {formatNumber(resultCount, locale)}{' '}
+        {formatNumber(resultCount)}{' '}
         {t(resultCount === 1 ? 'props.count.one' : 'props.count.other')}
       </p>
       {dirty ? (
@@ -437,7 +436,7 @@ export default function FilterBar({
           <option value="all">{t('props.filter.all')}</option>
           {MQ_STEPS.map((m) => (
             <option key={m} value={m}>
-              {`≥ ${formatArea(m, locale)}`}
+              {`≥ ${formatArea(m)}`}
             </option>
           ))}
         </Select>
@@ -494,7 +493,7 @@ export default function FilterBar({
             aria-live="polite"
             className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink-faint"
           >
-            {formatNumber(resultCount, locale)}{' '}
+            {formatNumber(resultCount)}{' '}
             {t(resultCount === 1 ? 'props.count.one' : 'props.count.other')}
           </p>
           {summary.length ? (
@@ -588,7 +587,7 @@ export default function FilterBar({
                   className="flex-1"
                   onClick={() => onDrawerOpenChange?.(false)}
                 >
-                  {formatNumber(resultCount, locale)}{' '}
+                  {formatNumber(resultCount)}{' '}
                   {t(resultCount === 1 ? 'props.count.one' : 'props.count.other')}
                 </Button>
               </div>

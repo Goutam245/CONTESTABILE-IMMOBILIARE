@@ -7,7 +7,6 @@
  * do not run JS, the fix is prerendering at build time, not a change here.
  */
 import { useEffect } from 'react'
-import type { Locale } from '@/types'
 import { agency } from '@/data/site'
 
 export const SITE_URL = 'https://www.agenziacontestabile.it'
@@ -19,7 +18,6 @@ interface Seo {
   image?: string
   /** Route path, used for canonical + og:url. */
   path?: string
-  locale: Locale
   /** JSON-LD to publish alongside the meta tags. */
   jsonLd?: Record<string, unknown>
 }
@@ -46,7 +44,7 @@ function upsertLink(rel: string, href: string) {
 
 const JSON_LD_ID = 'route-json-ld'
 
-export function useSeo({ title, description, image, path, locale, jsonLd }: Seo): void {
+export function useSeo({ title, description, image, path, jsonLd }: Seo): void {
   useEffect(() => {
     const url = `${SITE_URL}${path ?? window.location.pathname}`
     const img = image ? (image.startsWith('http') ? image : `${SITE_URL}${image}`) : undefined
@@ -60,12 +58,7 @@ export function useSeo({ title, description, image, path, locale, jsonLd }: Seo)
     upsertMeta('meta[property="og:type"]', 'property', 'og:type', 'website')
     upsertMeta('meta[property="og:url"]', 'property', 'og:url', url)
     upsertMeta('meta[property="og:site_name"]', 'property', 'og:site_name', agency.legalName)
-    upsertMeta(
-      'meta[property="og:locale"]',
-      'property',
-      'og:locale',
-      locale === 'it' ? 'it_IT' : 'en_GB',
-    )
+    upsertMeta('meta[property="og:locale"]', 'property', 'og:locale', 'it_IT')
     if (img) upsertMeta('meta[property="og:image"]', 'property', 'og:image', img)
 
     upsertMeta(
@@ -86,7 +79,7 @@ export function useSeo({ title, description, image, path, locale, jsonLd }: Seo)
       script.textContent = JSON.stringify(jsonLd)
       document.head.appendChild(script)
     }
-  }, [title, description, image, path, locale, jsonLd])
+  }, [title, description, image, path, jsonLd])
 }
 
 /** Organisation card — emitted on every page via the layout. */
