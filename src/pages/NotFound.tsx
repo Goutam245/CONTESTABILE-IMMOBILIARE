@@ -8,19 +8,17 @@
  */
 import { motion } from 'framer-motion'
 import { ArrowGlyph, ButtonLink, Eyebrow, Section } from '@/components/primitives'
-import { useI18n } from '@/i18n'
+import { t } from '@/copy'
 import { agency } from '@/data/site'
 import { useSeo } from '@/lib/seo'
 
 const easing = [0.16, 1, 0.3, 1] as const
 
 export default function NotFound() {
-  const { t, locale } = useI18n()
 
   useSeo({
     title: `${t('nf.title')} — ${agency.name}`,
     description: t('nf.sub'),
-    locale,
   })
 
   return (

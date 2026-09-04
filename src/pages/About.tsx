@@ -9,6 +9,8 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '@/components/PageHero'
+import StoryTimeline from '@/components/StoryTimeline'
+import TiltCard from '@/components/TiltCard'
 import PropertyMap from '@/components/PropertyMap'
 import {
   DataRow,
@@ -21,7 +23,7 @@ import {
 import { heroPhoto } from '@/data/heroes'
 import { comuni, properties } from '@/data/properties'
 import { agency, openingHours, story } from '@/data/site'
-import { useI18n } from '@/i18n'
+import { t } from '@/copy'
 import { useReveal } from '@/lib/anim'
 import { SITE_URL, organisationJsonLd, useSeo } from '@/lib/seo'
 import { cx, formatNumber } from '@/lib/utils'
@@ -36,18 +38,17 @@ const stockByComune = new Map<string, number>()
 for (const p of properties) stockByComune.set(p.comune, (stockByComune.get(p.comune) ?? 0) + 1)
 
 export default function About() {
-  const { t, locale } = useI18n()
 
   const revealStory = useReveal<HTMLDivElement>({ stagger: 0.1 })
   const revealPledge = useReveal<HTMLDivElement>({ y: 34 })
   const revealOffice = useReveal<HTMLDivElement>()
   const revealAreas = useReveal<HTMLDivElement>({ stagger: 0.05 })
 
-  const chapter = story[locale]
+  const chapter = story
   // `story` and `openingHours` are `as const`, so indexing by locale yields a
   // union of readonly tuples; both are widened here so they can be mapped.
   const paragraphs: readonly string[] = chapter.paragraphs
-  const hours: ReadonlyArray<{ day: string; hours: string }> = openingHours[locale]
+  const hours: ReadonlyArray<{ day: string; hours: string }> = openingHours.hours
 
   const title = `${t('about.hero.title')} — ${agency.name}`
   const description = chapter.lead
@@ -72,7 +73,6 @@ export default function About() {
     description,
     image: heroPhoto('about')?.full,
     path: '/agenzia',
-    locale,
     jsonLd,
   })
 
@@ -111,7 +111,10 @@ export default function About() {
             data-reveal
             className="lg:col-span-4 lg:col-start-9 lg:self-start lg:sticky lg:top-[calc(var(--nav-h)+3rem)]"
           >
-            <div className="rounded-[2px] border border-ink/10 bg-bone p-8 sm:p-10">
+            {/* The one card on the page with nothing but type in it, so it is
+                the one that benefits most from having some physical presence. */}
+            <TiltCard intensity={6}>
+              <div className="rounded-[2px] border border-ink/10 bg-bone p-8 sm:p-10">
               <span
                 aria-hidden
                 className="block font-display text-[44px] font-extralight leading-none tracking-[0.04em] text-brand-500"
@@ -123,13 +126,18 @@ export default function About() {
                 {agency.agent}
               </h2>
               <Eyebrow className="mt-3">{t('about.agent.role')}</Eyebrow>
-              <p className="mt-6 text-[13px] tabular-nums text-ink-faint">
-                {agency.address.city} · {agency.founded}
-              </p>
-            </div>
+                <p className="mt-6 text-[13px] tabular-nums text-ink-faint">
+                  {agency.address.city} · {agency.founded}
+                </p>
+              </div>
+            </TiltCard>
           </aside>
         </div>
       </Section>
+
+      {/* The chronology sits between the narrative and the pledge — it is the
+          story told again as structure, which is what makes 1989 land. */}
+      <StoryTimeline />
 
       <Section tone="ink">
         <div ref={revealPledge} className="shell">
@@ -150,7 +158,7 @@ export default function About() {
         </div>
       </Section>
 
-      <Section tone="bone">
+      <Section tone="sand">
         <div ref={revealOffice} className="shell">
           <SectionHead eyebrow={t('about.hero.eyebrow')} title={t('about.office')} />
 
@@ -208,7 +216,7 @@ export default function About() {
                     </span>
                     <span className="flex shrink-0 items-baseline gap-1.5 text-[10.5px] uppercase tracking-[0.12em] text-ink-faint">
                       <span className="text-[14px] tabular-nums text-ink-muted">
-                        {formatNumber(count, locale)}
+                        {formatNumber(count)}
                       </span>
                       {t(count === 1 ? 'props.count.one' : 'props.count.other')}
                     </span>

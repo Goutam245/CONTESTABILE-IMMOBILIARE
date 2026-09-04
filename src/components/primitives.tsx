@@ -16,12 +16,16 @@ export function Section({
 }: {
   children: ReactNode
   className?: string
-  tone?: 'bone' | 'white' | 'ink'
+  tone?: 'bone' | 'white' | 'sand' | 'ink'
   id?: string
 }) {
+  // Three light grounds rather than two: white / bone / sand gives a long page
+  // a rhythm instead of an alternating stripe, and lets a section read as a
+  // deliberate pause rather than just "the next block".
   const tones = {
     bone: 'bg-bone text-ink',
     white: 'bg-white text-ink',
+    sand: 'bg-bone-200 text-ink',
     ink: 'bg-ink text-bone',
   } as const
   return (
@@ -71,6 +75,14 @@ export function SectionHead({
     >
       {eyebrow ? (
         <div data-reveal>
+          <span
+            aria-hidden
+            className={cx(
+              // The true logo green, not a tint of it.
+              'mb-5 block h-[2px] w-14',
+              invert ? 'bg-brand-300' : 'bg-brand-500',
+            )}
+          />
           <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
         </div>
       ) : null}
@@ -124,7 +136,8 @@ const sizes: Record<Size, string> = {
 
 const variants: Record<Variant, string> = {
   solid: 'bg-ink text-bone hover:bg-brand-600',
-  accent: 'bg-terra-500 text-white hover:bg-terra-600',
+  // terra-600 gives 4.70:1 with white; terra-500 measured 3.82:1.
+  accent: 'bg-terra-600 text-white hover:bg-terra-700',
   outline:
     'border border-current text-ink hover:bg-ink hover:text-bone hover:border-ink',
   ghost: 'text-ink hover:text-brand-600',
@@ -202,7 +215,7 @@ export function Tag({
   const tones = {
     neutral: 'bg-bone-200/80 text-ink-muted',
     sale: 'bg-brand-500 text-white',
-    rent: 'bg-terra-500 text-white',
+    rent: 'bg-terra-700 text-white',
     invert: 'bg-white/12 text-bone backdrop-blur-sm',
   } as const
   return (
@@ -256,7 +269,9 @@ export function PlaceholderNote({ children, invert }: { children: ReactNode; inv
     <p
       className={cx(
         'mt-6 flex items-start gap-2 text-[11.5px] leading-relaxed',
-        invert ? 'text-bone/45' : 'text-ink-faint',
+        // ink-faint measured 4.06:1 on the sand ground — under AA for an
+        // 11.5px note that people are meant to actually read.
+        invert ? 'text-bone/60' : 'text-ink-muted',
       )}
     >
       <span aria-hidden className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-terra-500" />

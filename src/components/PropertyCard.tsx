@@ -6,10 +6,11 @@
  * layout only splits into two columns from `sm` up, so the narrow viewport
  * always falls back to the grid arrangement.
  */
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import SmartImage from './SmartImage'
+import PhotoFan from './PhotoFan'
 import { ArrowGlyph, Rule, Tag } from './primitives'
-import { useI18n, type TKey } from '@/i18n'
+import { t, type TKey } from '@/copy'
 import { coverFor, photoCount } from '@/lib/photos'
 import {
   contrattoKey,
@@ -41,7 +42,9 @@ export default function PropertyCard({
   layout?: 'grid' | 'list'
   className?: string
 }) {
-  const { t, locale } = useI18n()
+
+  // Hover AND focus, so the fan is not mouse-only.
+  const [fanned, setFanned] = useState(false)
 
   const cover = coverFor(property.id)
   const total = photoCount(property.id)
@@ -50,10 +53,10 @@ export default function PropertyCard({
   // propertyTitle leads with the tipologia label, which both dictionaries
   // already capitalise — force it anyway so a future lowercase label cannot
   // leave the heading opening in lower case.
-  const heading = propertyTitle(property, locale, t)
+  const heading = propertyTitle(property)
   const title = `${heading.charAt(0).toUpperCase()}${heading.slice(1)}`
 
-  const stats: Stat[] = [{ key: 'mq', value: formatArea(property.mq, locale) }]
+  const stats: Stat[] = [{ key: 'mq', value: formatArea(property.mq) }]
   const counted: Array<[string, number | null, TKey]> = [
     ['vani', property.vani, 'spec.vani'],
     ['camere', property.camere, 'spec.camere'],
@@ -61,12 +64,16 @@ export default function PropertyCard({
   ]
   for (const [key, value, labelKey] of counted) {
     if (value === null) continue
-    stats.push({ key, value: formatNumber(value, locale), label: t(labelKey) })
+    stats.push({ key, value: formatNumber(value), label: t(labelKey) })
   }
 
   return (
     <Link
       to={routeFor(property)}
+      onMouseEnter={() => setFanned(true)}
+      onMouseLeave={() => setFanned(false)}
+      onFocus={() => setFanned(true)}
+      onBlur={() => setFanned(false)}
       className={cx(
         'group flex h-full flex-col overflow-hidden rounded-[2px] border border-ink/8 bg-white',
         'transition-[transform,box-shadow,border-color] duration-500 ease-cinematic',
@@ -82,20 +89,13 @@ export default function PropertyCard({
             isList ? 'aspect-[4/3] sm:aspect-auto sm:h-full sm:min-h-[15rem]' : 'aspect-[4/3]',
           )}
         >
-          <SmartImage
-            src={cover.card}
-            srcLarge={cover.full}
-            sizes={
-              isList
-                ? '(max-width: 640px) 100vw, 40vw'
-                : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
-            }
-            alt={photoAlt(property, 0, total, locale, t)}
-            color={cover.color}
-            width={cover.w}
-            height={cover.h}
+          {/* The pile riffles on hover — depth within one listing, as opposed
+              to the ring's breadth across many. */}
+          <PhotoFan
+            propertyId={property.id}
+            alt={photoAlt(property, 0, total)}
+            active={fanned}
             priority={priority}
-            zoomOnHover
             className="h-full w-full"
           />
 
@@ -151,7 +151,7 @@ export default function PropertyCard({
 
         <div className="mt-auto flex items-end justify-between gap-4 pt-6">
           <p className="font-display text-[22px] font-light leading-none tracking-[-0.015em] transition-colors duration-500 ease-cinematic group-hover:text-brand-600 sm:text-[24px]">
-            {formatPriceWithPeriod(property, locale, t)}
+            {formatPriceWithPeriod(property)}
           </p>
           {/* ArrowGlyph already carries transition-all — adding one here would
               override it and kill the width extension. */}

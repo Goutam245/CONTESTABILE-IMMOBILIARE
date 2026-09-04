@@ -1,22 +1,21 @@
 /**
  * Site header.
  *
- * One permanent treatment on every page and at every scroll position: a dark
- * bar, near-opaque at the top of the page and fully opaque once scrolled. Only
- * the background opacity and the shadow change — the height, the logo size and
- * the type scale are fixed, so scrolling never makes the header shrink, reflow,
- * or momentarily read as bare glass over a photograph.
+ * One permanent light bar on every page and at every scroll position. Only the
+ * background weight and the shadow change between states — the height, the logo
+ * size and the type scale are fixed, so scrolling never makes the header shrink
+ * or reflow, and it never reads as bare glass over a photograph.
  *
- * Earlier versions were conditional (transparent over heroes, solid elsewhere),
- * which meant the header looked different page to page and depended on how
- * bright the hero behind it happened to be.
+ * The mobile sheet is light too, and the hamburger becomes an X in place, so
+ * there is always one obvious way out of it. The header sits ABOVE the sheet
+ * (z-120 vs z-110) — it establishes its own stacking context, so a z-index on
+ * the toggle alone could never lift it out from under the overlay.
  */
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Logo from './Logo'
-import LanguageSwitcher from './LanguageSwitcher'
-import { useI18n, type TKey } from '@/i18n'
+import { t, type TKey } from '@/copy'
 import { agency } from '@/data/site'
 import { cx } from '@/lib/utils'
 import { setScrollLocked } from '@/lib/smoothScroll'
@@ -28,7 +27,7 @@ const LINKS: { to: string; key: TKey }[] = [
   { to: '/contatti', key: 'nav.contact' },
 ]
 
-/** Past this many pixels the bar commits to its solid state. */
+/** Past this many pixels the bar commits to its settled state. */
 const SOLID_AFTER = 64
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -40,7 +39,6 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export default function Navbar() {
-  const { t } = useI18n()
   const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -78,20 +76,15 @@ export default function Navbar() {
     <>
       <header
         className={cx(
-          'fixed inset-x-0 top-0 z-[100] h-[var(--nav-h)] border-b',
+          'fixed inset-x-0 top-0 z-[120] h-[var(--nav-h)] border-b',
           'transition-[background-color,box-shadow,border-color] duration-500 ease-cinematic',
-          // Always dark, always present — only the weight of it changes.
           scrolled || open
-            ? 'border-white/10 bg-ink shadow-[0_10px_30px_-18px_rgba(0,0,0,.85)]'
-            : 'border-white/8 bg-ink/85 backdrop-blur-md',
+            ? 'border-ink/10 bg-bone shadow-[0_1px_0_rgba(10,20,16,.05),0_12px_28px_-20px_rgba(10,20,16,.35)]'
+            : 'border-ink/8 bg-bone/92 backdrop-blur-md',
         )}
       >
         <div className="shell relative flex h-full items-center justify-between gap-6">
-          {/* `invert`, not the full lockup: at header height the lockup's
-              outlined wordmark collapses to an unreadable smudge on dark. This
-              variant keeps the real house artwork and sets the name in Fraunces
-              beside it. It is used in both header states, so nothing swaps. */}
-          <Logo variant="invert" className="h-9 shrink-0 sm:h-10" />
+          <Logo variant="mark-dark" className="h-9 shrink-0 sm:h-10" />
 
           <nav aria-label="Principale" className="hidden items-center gap-8 lg:flex xl:gap-11">
             {LINKS.map((l) => (
@@ -101,7 +94,7 @@ export default function Navbar() {
                     <span
                       className={cx(
                         'text-[14px] font-medium uppercase tracking-[0.13em] transition-colors duration-300',
-                        isActive ? 'text-bone' : 'text-bone/70 group-hover:text-bone',
+                        isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink',
                       )}
                     >
                       {t(l.key)}
@@ -123,16 +116,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3 sm:gap-4">
-            <a
-              href={agency.phone.href}
-              className="hidden text-[14px] font-medium tracking-[0.03em] text-bone/80 transition-colors duration-300 hover:text-bone xl:inline"
-            >
-              {agency.phone.label}
-            </a>
-
-            <LanguageSwitcher tone="dark" className="hidden sm:inline-flex" />
-
+          <div className="flex items-center gap-3">
             <a
               href={agency.whatsapp.href}
               target="_blank"
@@ -140,7 +124,10 @@ export default function Navbar() {
               aria-label={`${t('nav.whatsapp')} ${agency.whatsapp.label}`}
               className={cx(
                 'inline-flex h-11 w-11 items-center justify-center rounded-full',
-                'bg-whatsapp text-white shadow-[0_2px_10px_-2px_rgba(37,211,102,.5)]',
+                // WhatsApp's own brand green, with the ring giving the control a
+                // defined boundary against the light bar.
+                'bg-whatsapp text-white ring-1 ring-inset ring-whatsapp-600/60',
+                'shadow-[0_2px_10px_-3px_rgba(37,211,102,.65)]',
                 'transition-colors duration-300 ease-cinematic hover:bg-whatsapp-600',
               )}
             >
@@ -153,7 +140,7 @@ export default function Navbar() {
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="mobile-nav"
-              className="relative z-[120] -mr-1.5 flex h-11 w-11 items-center justify-center rounded-full text-bone transition-colors duration-300 hover:bg-white/12 lg:hidden"
+              className="relative -mr-1.5 flex h-11 w-11 items-center justify-center rounded-full text-ink transition-colors duration-300 hover:bg-ink/6 lg:hidden"
             >
               <span className="sr-only">{open ? t('nav.close') : t('nav.menu')}</span>
               <span aria-hidden className="relative block h-3.5 w-6">
@@ -182,10 +169,10 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[110] bg-ink text-bone lg:hidden"
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[110] bg-bone text-ink lg:hidden"
           >
-            <div className="shell flex h-full flex-col overflow-y-auto pb-10 pt-[calc(var(--nav-h)+1.5rem)]">
+            <div className="shell flex h-full flex-col overflow-y-auto pb-12 pt-[calc(var(--nav-h)+1.5rem)]">
               <nav aria-label="Principale (mobile)" className="flex flex-col">
                 {LINKS.map((l) => (
                   <NavLink
@@ -194,10 +181,10 @@ export default function Navbar() {
                     end={l.to === '/'}
                     className={({ isActive }) =>
                       cx(
-                        'flex items-center justify-between border-b border-bone/12 py-5',
+                        'flex items-center justify-between border-b border-ink/10 py-5',
                         'font-display text-[clamp(1.8rem,8vw,2.4rem)] font-light leading-none',
                         'transition-colors duration-300',
-                        isActive ? 'text-bone' : 'text-bone/65 hover:text-bone',
+                        isActive ? 'text-ink' : 'text-ink-muted hover:text-ink',
                       )
                     }
                   >
@@ -213,29 +200,20 @@ export default function Navbar() {
                 ))}
               </nav>
 
-              <div className="mt-auto space-y-6 pt-10">
-                <LanguageSwitcher tone="dark" />
-                <div className="flex flex-col gap-2.5 text-[15px]">
-                  <a href={agency.phone.href} className="text-bone/80 hover:text-bone">
-                    {agency.phone.label}
-                  </a>
-                  <a href={agency.mobile.href} className="text-bone/80 hover:text-bone">
-                    {agency.mobile.label}
-                  </a>
-                  <a
-                    href={`mailto:${agency.email}`}
-                    className="break-all text-bone/80 hover:text-bone"
-                  >
-                    {agency.email}
-                  </a>
-                </div>
-                <Link
-                  to="/contatti"
-                  className="inline-flex items-center gap-3 rounded-full bg-terra-500 px-5 py-3 text-[12px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-terra-600"
+              <address className="mt-auto flex flex-col gap-2.5 pt-10 text-[15px] not-italic">
+                <a href={agency.phone.href} className="text-ink-muted hover:text-ink">
+                  {agency.phone.label}
+                </a>
+                <a href={agency.mobile.href} className="text-ink-muted hover:text-ink">
+                  {agency.mobile.label}
+                </a>
+                <a
+                  href={`mailto:${agency.email}`}
+                  className="break-all text-ink-muted hover:text-ink"
                 >
-                  {t('nav.contact')}
-                </Link>
-              </div>
+                  {agency.email}
+                </a>
+              </address>
             </div>
           </motion.div>
         )}

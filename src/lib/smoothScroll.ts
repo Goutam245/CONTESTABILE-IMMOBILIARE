@@ -40,10 +40,17 @@ touchMultiplier: 1.6,
   }, [])
 }
 
-/** Jump to the top without the smooth easing — used on route change. */
+/**
+ * Jump to the top — used on every route change.
+ *
+ * Both paths are taken deliberately: Lenis keeps its own scroll value, and the
+ * window keeps the real one. Resetting only Lenis leaves a phone (where Lenis
+ * is disabled) scrolled where it was; resetting only the window leaves desktop
+ * snapping back on Lenis's next frame.
+ */
 export function scrollToTop(immediate = true): void {
-  if (lenis) lenis.scrollTo(0, { immediate })
-  else window.scrollTo({ top: 0, behavior: immediate ? 'auto' : 'smooth' })
+  lenis?.scrollTo(0, { immediate, force: true })
+  window.scrollTo({ top: 0, left: 0, behavior: immediate ? 'auto' : 'smooth' })
 }
 
 /** Freeze the page behind a modal (lightbox, mobile menu). */

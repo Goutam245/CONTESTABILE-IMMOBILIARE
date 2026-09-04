@@ -12,10 +12,7 @@ export const agency = {
   legalName: 'CONTESTABILE IMMOBILIARE',
   founded: 1989,
   agent: 'Giuseppe Contestabile',
-  tagline: {
-    it: "…dal 1989 un'ideologia, un solo linguaggio… LA CASA…",
-    en: '…since 1989 one ideology, one language… THE HOME…',
-  },
+  tagline: "…dal 1989 un'ideologia, un solo linguaggio… LA CASA…",
   address: {
     street: 'Viale Alberto Beneduce, 23',
     city: 'Caserta',
@@ -48,15 +45,10 @@ export const yearsTrading = (): number => new Date().getFullYear() - agency.foun
  */
 export const openingHours = {
   placeholder: true,
-  it: [
+  hours: [
     { day: 'Lunedì — Venerdì', hours: '09:30 — 13:00 · 16:00 — 19:30' },
     { day: 'Sabato', hours: '09:30 — 13:00' },
     { day: 'Domenica', hours: 'Chiuso' },
-  ],
-  en: [
-    { day: 'Monday — Friday', hours: '09:30 — 13:00 · 16:00 — 19:30' },
-    { day: 'Saturday', hours: '09:30 — 13:00' },
-    { day: 'Sunday', hours: 'Closed' },
   ],
 } as const
 
@@ -80,29 +72,20 @@ export const testimonials = [
   {
     id: 't1',
     name: 'Famiglia R.',
-    role: { it: 'Acquisto, Caserta centro', en: 'Purchase, central Caserta' },
-    quote: {
-      it: "Ci hanno mostrato solo case che avevano davvero senso per noi. In tre mesi abbiamo chiuso, senza sorprese sui documenti.",
-      en: 'They only showed us homes that genuinely made sense for us. We completed in three months, with no surprises on the paperwork.',
-    },
+    role: 'Acquisto, Caserta centro',
+    quote: "Ci hanno mostrato solo case che avevano davvero senso per noi. In tre mesi abbiamo chiuso, senza sorprese sui documenti.",
   },
   {
     id: 't2',
     name: 'M. de Luca',
-    role: { it: 'Locazione, Macerata Campania', en: 'Letting, Macerata Campania' },
-    quote: {
-      it: "Il locale era fermo da un anno. Loro hanno rifatto le foto, rivisto il prezzo e trovato il conduttore giusto.",
-      en: 'The unit had sat empty for a year. They reshot the photographs, revisited the price and found the right tenant.',
-    },
+    role: 'Locazione, Macerata Campania',
+    quote: "Il locale era fermo da un anno. Loro hanno rifatto le foto, rivisto il prezzo e trovato il conduttore giusto.",
   },
   {
     id: 't3',
     name: 'A. Esposito',
-    role: { it: 'Vendita, Marzano Appio', en: 'Sale, Marzano Appio' },
-    quote: {
-      it: "Conoscono i paesi dell'alto casertano meglio di chiunque altro. Hanno valutato la casa di famiglia con onestà.",
-      en: 'They know the villages of upper Caserta better than anyone. They valued our family house honestly.',
-    },
+    role: 'Vendita, Marzano Appio',
+    quote: "Conoscono i paesi dell'alto casertano meglio di chiunque altro. Hanno valutato la casa di famiglia con onestà.",
   },
 ] as const
 
@@ -113,24 +96,13 @@ export const testimonials = [
  * transaction claims are asserted. Rewrite with the client's own words.
  */
 export const story = {
-  it: {
-    lead: "Dal 1989 lavoriamo su un solo mercato: Caserta e la sua provincia. Abbastanza a lungo da aver visto le stesse case cambiare famiglia due volte.",
-    paragraphs: [
-      "Contestabile Immobiliare nasce nel 1989 a Caserta, in Viale Alberto Beneduce. Da allora l'indirizzo non è cambiato, e non è cambiato nemmeno il modo di lavorare: una casa alla volta, vista di persona, misurata, fotografata e raccontata per quello che è.",
-      "Il nostro raggio d'azione è preciso. Il centro storico di Caserta, con i palazzi d'epoca che si affacciano sulla Flora della Reggia. I comuni della cintura — Casagiove, San Marco Evangelista, Macerata Campania. E l'alto casertano, da Caiazzo ad Alvignano fino a Marzano Appio, dove si trovano ancora stabili interi del Settecento e ville con il terreno intorno.",
-      "Trattiamo vendita e locazione, residenziale e commerciale. Su ogni immobile pubblichiamo la scheda completa: consistenze reali, classe energetica, spese, stato di occupazione. Se una casa è affittata lo scriviamo, con la scadenza del contratto e il canone. Preferiamo una telefonata in meno e un cliente informato in più.",
-    ],
-    pledge: "Un'ideologia, un solo linguaggio: LA CASA.",
-  },
-  en: {
-    lead: 'Since 1989 we have worked one market: Caserta and its province. Long enough to have watched the same houses change families twice.',
-    paragraphs: [
-      "Contestabile Immobiliare was founded in Caserta in 1989, on Viale Alberto Beneduce. The address has not changed since, and neither has the way we work: one house at a time, seen in person, measured, photographed and described for what it is.",
-      'Our range is deliberate. The historic centre of Caserta, with its period palazzi looking onto the Flora gardens of the Royal Palace. The towns of the belt — Casagiove, San Marco Evangelista, Macerata Campania. And upper Caserta, from Caiazzo through Alvignano to Marzano Appio, where you can still find whole eighteenth-century buildings and villas with land around them.',
-      'We handle both sales and lettings, residential and commercial. Every property carries its full record: real surface breakdowns, energy rating, service charges, occupancy status. If a house is tenanted we say so, with the contract expiry and the rent. We would rather take one call fewer and have one better-informed client.',
-    ],
-    pledge: 'One ideology, one language: THE HOME.',
-  },
+  lead: "Dal 1989 lavoriamo su un solo mercato: Caserta e la sua provincia. Abbastanza a lungo da aver visto le stesse case cambiare famiglia due volte.",
+  paragraphs: [
+    "Contestabile Immobiliare nasce nel 1989 a Caserta, in Viale Alberto Beneduce. Da allora l'indirizzo non è cambiato, e non è cambiato nemmeno il modo di lavorare: una casa alla volta, vista di persona, misurata, fotografata e raccontata per quello che è.",
+    "Il nostro raggio d'azione è preciso. Il centro storico di Caserta, con i palazzi d'epoca che si affacciano sulla Flora della Reggia. I comuni della cintura — Casagiove, San Marco Evangelista, Macerata Campania. E l'alto casertano, da Caiazzo ad Alvignano fino a Marzano Appio, dove si trovano ancora stabili interi del Settecento e ville con il terreno intorno.",
+    "Trattiamo vendita e locazione, residenziale e commerciale. Su ogni immobile pubblichiamo la scheda completa: consistenze reali, classe energetica, spese, stato di occupazione. Se una casa è affittata lo scriviamo, con la scadenza del contratto e il canone. Preferiamo una telefonata in meno e un cliente informato in più.",
+  ],
+  pledge: "Un'ideologia, un solo linguaggio: LA CASA.",
 } as const
 
 /** Public form endpoint. See README — swap for the agency's own Formspree ID. */
